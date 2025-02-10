@@ -18,6 +18,8 @@ import { PaymentModule } from './payment/payment.module';
 import { ConfigModule } from '@nestjs/config';
 import { FavoritesModule } from './favorites/favorites.module';
 import { Favorite } from './favorites/entities/favorite.entity';
+import { ShippingsModule } from './shippings/shippings.module';
+import { ShippingAddress } from './shippings/entities/shipping.entity';
 
 @Module({
   imports: [
@@ -28,7 +30,7 @@ import { Favorite } from './favorites/entities/favorite.entity';
       username: 'root',
       password: 'StrongP@ssword1',
       database: 'newEcommerce',
-      entities: [Product, Category, User, Cart, CartItem, Order, OrderItem, Favorite],
+      entities: [Product, Category, User, Cart, CartItem, Order, OrderItem, Favorite, ShippingAddress],
       synchronize: true,
     }),
     ConfigModule.forRoot({
@@ -41,6 +43,7 @@ import { Favorite } from './favorites/entities/favorite.entity';
     OrdersModule,
     PaymentModule,
     FavoritesModule,
+    ShippingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

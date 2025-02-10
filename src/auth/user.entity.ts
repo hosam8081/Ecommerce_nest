@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { ShippingAddress } from 'src/shippings/entities/shipping.entity';
 
 export enum UserRole {
     USER = 'user',
@@ -25,6 +26,9 @@ export class User {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
+
+  @OneToMany(() => ShippingAddress, (shipping) => shipping.id)
+  shippingAddresses: ShippingAddress[]
 
   @BeforeInsert()
   async hashPassword() {

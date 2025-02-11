@@ -24,7 +24,6 @@ export class UsersController {
   @Get()
   findAllUsers(
     @Query() pagination?: PaginationDto,
-    @Query() email?: string,
   ) {
     return this.usersService.findAllUsers(pagination?.page, pagination?.limit);
   }

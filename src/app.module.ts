@@ -21,6 +21,7 @@ import { Favorite } from './favorites/entities/favorite.entity';
 import { ShippingsModule } from './shippings/shippings.module';
 import { ShippingAddress } from './shippings/entities/shipping.entity';
 import { UsersModule } from './admin/users/users.module';
+import { OrdersModule as OrdersAdminModule} from './admin/orders/orders.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { UsersModule } from './admin/users/users.module';
     FavoritesModule,
     ShippingsModule,
     UsersModule,
+    OrdersAdminModule
   ],
   controllers: [AppController],
   providers: [AppService],

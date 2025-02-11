@@ -20,6 +20,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { Favorite } from './favorites/entities/favorite.entity';
 import { ShippingsModule } from './shippings/shippings.module';
 import { ShippingAddress } from './shippings/entities/shipping.entity';
+import { UsersModule } from './admin/users/users.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ShippingAddress } from './shippings/entities/shipping.entity';
     PaymentModule,
     FavoritesModule,
     ShippingsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, IsNumber, IsOptional, IsPositive, IsInt, IsDecimal, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsPositive, IsInt } from 'class-validator';
 import { CreateCategoryDto } from 'src/categories/dto/create-category.dto';
 
 export class CreateProductDto {
@@ -29,7 +29,5 @@ export class CreateProductDto {
   stock: number;
 
   @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => CreateCategoryDto)
-  category: CreateCategoryDto;
+  category_id: number;
 }

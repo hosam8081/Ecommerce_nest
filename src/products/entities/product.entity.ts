@@ -1,6 +1,6 @@
 
 import { Category } from 'src/categories/entities/category.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { ProductImages } from './product-images.entity';
 
 @Entity({ name: "products" })

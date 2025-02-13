@@ -16,7 +16,7 @@ export class OrdersService {
     private cartService: CartsService,
   ) {}
 
-  async createOrder(user: User) {
+  async createOrder(user: User, shipping_id:number) {
     const cart = await this.cartService.getCart(user);
   
     if (!cart.items.length) {
@@ -27,7 +27,7 @@ export class OrdersService {
     const orderItems:any = [];
   
     // Create an order
-    const order = this.orderRepository.create({ user, items: [], totalPrice });
+    const order = this.orderRepository.create({ user, items: [], totalPrice, shippingAddress: {id: shipping_id} });
     await this.orderRepository.save(order);
   
     for (const cartItem of cart.items) {
@@ -57,6 +57,6 @@ export class OrdersService {
   }
 
   getOrders(user: User) {
-    return this.orderRepository.find({ where: { user }, relations: ['items', 'items.product'] });
+    return this.orderRepository.find({ where: { user }, relations: ['items', 'items.product', 'shippingAddress'] });
   }
 }

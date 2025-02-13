@@ -8,8 +8,8 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  createOrder(@Req() req) {
-    return this.ordersService.createOrder(req.user);
+  createOrder(@Req() req, @Body("shipping_id") shipping_id) {
+    return this.ordersService.createOrder(req.user, shipping_id);
   }
 
   @Get()

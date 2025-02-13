@@ -16,8 +16,8 @@ export class CartsController {
   }
 
   @Post()
-  addToCart(@Body() addToCartDto: AddToCartDto) {
-    return this.cartsService.addToCart(addToCartDto);
+  addToCart(@Body() addToCartDto: AddToCartDto, @Req() req) {
+    return this.cartsService.addToCart(addToCartDto, req.user);
   }
 
 

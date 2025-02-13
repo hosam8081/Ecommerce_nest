@@ -28,10 +28,17 @@ export class CartsService {
     // Calculate total price
     const totalPrice = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
     
-    return { ...cart, totalPrice };
+    return { ...cart, totalPrice};
   }
 
-  async addToCart(createCartDto: AddToCartDto) {
+  async addToCart(createCartDto: AddToCartDto, user) {
+
+    const cart = await this.cartRepository.findOne({where: {user}, relations: {user: true, items: true}})
+
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+
 
     const product = await this.productRepository.findOne({ where: { id: createCartDto.product_id } });
 
@@ -41,7 +48,7 @@ export class CartsService {
 
     let cartItem = await this.cartItemRepository.findOne({
       where: {
-        cart: { id: createCartDto.cartId },
+        cart,
         product,
       },
       relations: ['cart', 'product'],
@@ -49,8 +56,8 @@ export class CartsService {
 
     if (!cartItem) {
       cartItem = this.cartItemRepository.create({
-        product: { id: createCartDto.product_id },
-        cart: { id: createCartDto.cartId },
+        product,
+        cart: cart,
         quantity: createCartDto.quantity,
         price: product.price
       });
@@ -60,7 +67,7 @@ export class CartsService {
     }
     await this.cartItemRepository.save(cartItem);
 
-    return cartItem;
+    return this.getCart(user);
   }
 
   async update(product_id: number, updateCartDto, user: User) {
@@ -68,7 +75,7 @@ export class CartsService {
     if (!cartItem) {
       throw new NotFoundException('Item not found in cart');
     }
-    cartItem.quantity += updateCartDto.quantity;
+    cartItem.quantity = updateCartDto.quantity;
     await this.cartItemRepository.save(cartItem);
     return this.getCart(user);
   }

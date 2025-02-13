@@ -8,8 +8,4 @@ export class AddToCartDto {
     @IsNotEmpty()
     @IsNumber()
     quantity: number
-
-    @IsNotEmpty()
-    @IsNumber()
-    cartId: number
 }

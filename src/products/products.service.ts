@@ -13,8 +13,8 @@ export class ProductsService {
     private productsRepository: Repository<Product>,
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
-    const product = this.productsRepository.create({...createProductDto, category: {id: createProductDto.category_id}});
+  async create(createProductDto: CreateProductDto, imageUrl:string) {
+    const product = this.productsRepository.create({...createProductDto, category: {id: createProductDto.category_id}, image:imageUrl});
     await this.productsRepository.save(product);
     return product;
   }

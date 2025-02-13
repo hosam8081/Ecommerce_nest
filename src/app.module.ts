@@ -22,6 +22,7 @@ import { ShippingsModule } from './shippings/shippings.module';
 import { ShippingAddress } from './shippings/entities/shipping.entity';
 import { UsersModule } from './admin/users/users.module';
 import { OrdersModule as OrdersAdminModule} from './admin/orders/orders.module';
+import { ProductImages } from './products/entities/product-images.entity';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { OrdersModule as OrdersAdminModule} from './admin/orders/orders.module';
       username: 'root',
       password: 'StrongP@ssword1',
       database: 'newEcommerce',
-      entities: [Product, Category, User, Cart, CartItem, Order, OrderItem, Favorite, ShippingAddress],
+      entities: [Product, ProductImages, Category, User, Cart, CartItem, Order, OrderItem, Favorite, ShippingAddress],
       synchronize: true,
     }),
     ConfigModule.forRoot({

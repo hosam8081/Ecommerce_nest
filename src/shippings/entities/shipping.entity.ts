@@ -2,7 +2,7 @@ import { User } from "src/auth/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
-@Entity()
+@Entity({ name: "shipping_addressess" })
 export class ShippingAddress {
     @PrimaryGeneratedColumn()
     id: number

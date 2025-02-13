@@ -2,7 +2,7 @@ import { User } from "src/auth/user.entity";
 import { Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CartItem } from "./cart-item.entity";
 
-@Entity()
+@Entity({name: "carts"})
 export class Cart {
     @PrimaryGeneratedColumn()
     id: number

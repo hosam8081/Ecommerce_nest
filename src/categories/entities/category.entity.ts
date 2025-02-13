@@ -1,6 +1,6 @@
 import { Product } from "src/products/entities/product.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-@Entity() // Defines the table in the database
+@Entity({name: "categories"}) // Defines the table in the database
 export class Category {
     @PrimaryGeneratedColumn()
     id: number;

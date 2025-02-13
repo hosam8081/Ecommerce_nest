@@ -2,7 +2,7 @@ import { User } from "src/auth/user.entity";
 import { Product } from "src/products/entities/product.entity";
 import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity() 
+@Entity({name: "favorites"}) 
 export class Favorite {
     @PrimaryGeneratedColumn()
     id: number;

@@ -4,7 +4,7 @@ import { Cart } from "./cart.entity";
 
 
 
-@Entity()
+@Entity({name: "cart_items"})
 export class CartItem {
     @PrimaryGeneratedColumn()
     id: number

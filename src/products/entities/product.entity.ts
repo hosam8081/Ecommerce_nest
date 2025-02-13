@@ -3,7 +3,7 @@ import { Category } from 'src/categories/entities/category.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { ProductImages } from './product-images.entity';
 
-@Entity()
+@Entity({ name: "products" })
 export class Product {
   @PrimaryGeneratedColumn()
   id: number;

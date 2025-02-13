@@ -15,10 +15,10 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({})
+  @Column({ default: '' })
   first_name: string;
 
-  @Column({})
+  @Column({ default: '' })
   last_name: string;
 
   @Column()

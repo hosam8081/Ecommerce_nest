@@ -59,4 +59,9 @@ export class OrdersService {
   getOrders(user: User) {
     return this.orderRepository.find({ where: { user }, relations: ['items', 'items.product', 'shippingAddress'] });
   }
+
+
+  getOrder(id, user: User) {
+    return this.orderRepository.findOne({ where: { id, user }, relations: ['items', 'items.product', 'shippingAddress'] });
+  }
 }

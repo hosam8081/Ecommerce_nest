@@ -9,7 +9,7 @@ export enum OrderStatus {
     SHIPPED = 'shipped',
     DELIVERED = 'delivered',
     CANCELED = 'canceled',
-  }
+}
 
 @Entity({ name: "orders" })
 export class Order {

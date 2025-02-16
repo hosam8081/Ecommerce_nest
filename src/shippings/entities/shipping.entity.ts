@@ -13,6 +13,24 @@ export class ShippingAddress {
 
     @Column()
     city: string;
+
+    @Column({type: "int"})
+    phone: number
+
+    @Column()
+    country: string;
+
+    @Column()
+    street: string;
+
+    @Column()
+    building: string;
+
+    @Column()
+    floor: string;
+
+    @Column()
+    apartment: string;
   
     @Column()
     state: string;

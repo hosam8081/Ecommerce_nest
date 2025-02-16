@@ -6,15 +6,18 @@ import { JwtAuthGuard } from 'src/auth/jwt-aut.guard';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
+  @Post('webhook')
+  async handleWebhook(@Body() body: any) {
+    console.log("✅ body", body)
+    console.log('✅ Webhook received:', body);
+
+    return await this.paymentService.handleWebhook(body);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post(':orderId')
   async initiatePayment(@Param('orderId') orderId: number) {
     return this.paymentService.createPayment(orderId);
   }
 
-  @Post('webhook')
-  async handleWebhook(@Body() body: any) {
-    await this.paymentService.handleWebhook(body);
-    return { success: true };
-  }
 }

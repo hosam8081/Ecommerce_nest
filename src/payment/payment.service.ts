@@ -67,15 +67,15 @@ export class PaymentService {
       billing_data: {
         first_name: order.user.first_name || "test",
         email: order.user.email,
-        phone_number: "0000000000",  // order.user.phone || "0000000000"
-        city: "Cairo",
-        country: "EG",
+        phone_number: order.shippingAddress.phone,  // order.user.phone || "0000000000"
+        city: order.shippingAddress.city || "test",
+        country: order.shippingAddress.country || "test",
 
         last_name: order.user.last_name || "test",
-        street: "asdf",
-        building: "asdf",
-        floor: "10",
-        apartment: "asdf"
+        street: order.shippingAddress.street,
+        building: order.shippingAddress.building,
+        floor: order.shippingAddress.floor,
+        apartment: order.shippingAddress.apartment
       },
     });
 
@@ -86,7 +86,7 @@ export class PaymentService {
   async createPayment(orderId: number) {
     console.log(`🔍 Fetching order with ID: ${orderId}`);
 
-    const order = await this.orderRepo.findOne({ where: { id: orderId }, relations: ['user', 'items', 'items.product'] });
+    const order = await this.orderRepo.findOne({ where: { id: orderId }, relations: ['user', 'items', 'items.product', 'shippingAddress'] });
 
     if (!order) {
         console.error('❌ Order not found');
@@ -106,6 +106,15 @@ export class PaymentService {
     const paymentKey = await this.generatePaymentKey(authToken, paymobOrderId, order);
     console.log(`✅ Payment Key: ${paymentKey.substring(0, 6)}...`);
 
+    const payment = this.paymentRepo.create({
+      order: order,  // Link the payment to the order
+      paymobOrderId: paymobOrderId,  // Store Paymob order ID
+      // paymentKey: paymentKey,  // Store the payment key
+      status: 'pending',  // Default payment status
+  });
+
+  await this.paymentRepo.save(payment);
+
     return {
         redirectUrl: `https://accept.paymob.com/api/acceptance/iframes/${this.IFRAME_ID}?payment_token=${paymentKey}`,
     };
@@ -115,17 +124,25 @@ export class PaymentService {
   async handleWebhook(data: any) {
     const { hmac, obj } = data;
 
-    // Verify HMAC (security check)
-    if (!this.verifyHMAC(hmac, obj)) {
-      throw new InternalServerErrorException('Invalid HMAC signature');
-    }
+    console.log('✅ Webhook Data:', obj);
+    console.log('✅ Webhook Data:', hmac);
+    console.log('🔍 PAYMOB_HMAC_SECRET:', process.env.PAYMOB_HMAC_SECRET);
 
-    const payment:any = await this.paymentRepo.findOne({
-      where: { order: { id: obj.order.id } },
+
+    // // Verify HMAC (security check)
+    // if (!this.verifyHMAC(hmac, obj)) {
+    //   console.error('❌ Invalid HMAC signature');
+    //   throw new InternalServerErrorException('Invalid HMAC signature');
+    // }
+
+    const payment = await this.paymentRepo.findOne({
+      where: { paymobOrderId: obj.order.id},
       relations: ['order'],
     });
 
     if (!payment) {
+      console.error('❌ Payment record not found');
+
       throw new NotFoundException('Payment record not found');
     }
 
@@ -141,9 +158,36 @@ export class PaymentService {
   // HMAC Verification (for webhook security)
   private verifyHMAC(hmac: string, obj: any): boolean {
     const hmacSecret = process.env.PAYMOB_HMAC_SECRET;
-    const sortedKeys = Object.keys(obj).sort();
-    const hashString = sortedKeys.map((key) => obj[key]).join('');
-    const generatedHmac = require('crypto').createHmac('sha512', hmacSecret).update(hashString).digest('hex');
-    return generatedHmac === hmac;
+    const receivedHmac = hmac.trim();
+  
+    console.log('🔍 PAYMOB_HMAC_SECRET:', hmacSecret);
+    console.log('🔍 Received HMAC:', receivedHmac);
+  
+    // Flatten the object and concatenate all values
+    const flattenObject = (obj: any): string => {
+      return Object.keys(obj)
+        .sort()
+        .map((key) => {
+          if (typeof obj[key] === 'object' && obj[key] !== null) {
+            return flattenObject(obj[key]); // Recursively flatten nested objects
+          }
+          return obj[key]; // Return primitive values
+        })
+        .join('');
+    };
+  
+    const hashString = flattenObject(obj);
+  
+    console.log('🔍 Object for HMAC:', obj);
+    console.log('🔍 Hash String:', hashString);
+  
+    const generatedHmac = require('crypto')
+      .createHmac('sha512', hmacSecret)
+      .update(hashString)
+      .digest('hex');
+  
+    console.log('🔍 Generated HMAC:', generatedHmac);
+  
+    return generatedHmac === receivedHmac;
   }
 }

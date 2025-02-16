@@ -1,16 +1,34 @@
-import { IsBoolean, IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateShippingDto {
-    @IsNotEmpty()
-    address: string
-    
-    @IsNotEmpty()
-    city: string;
+  @IsNotEmpty()
+  address: string;
 
-    @IsNotEmpty()
-    state: string;
+  @IsNotEmpty()
+  city: string;
 
-    @IsNotEmpty()
-    @IsNumber()
-    postalCode: number;
+  @IsNotEmpty()
+  country: string;
+
+  @IsNotEmpty()
+  state: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  postalCode: number;
+
+  @IsNotEmpty()
+  phone: number;
+
+  @IsNotEmpty()
+  street: string;
+
+  @IsNotEmpty()
+  building: string;
+
+  @IsNotEmpty()
+  floor: string;
+
+  @IsNotEmpty()
+  apartment: string;
 }

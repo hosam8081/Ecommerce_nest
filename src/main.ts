@@ -10,7 +10,7 @@ async function bootstrap() {
     app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
     // Apply Exception Filter Globally
-    app.useGlobalFilters(new ValidationExceptionFilter());
+    app.useGlobalFilters();
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

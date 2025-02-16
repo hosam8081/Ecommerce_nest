@@ -5,12 +5,15 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { ProductImages } from './entities/product-images.entity';
 
 @Injectable()
 export class ProductsService {
+  private readonly baseUrl = 'http://localhost:3000';
+
   constructor(
-    @InjectRepository(Product)
-    private productsRepository: Repository<Product>,
+    @InjectRepository(Product) private productsRepository: Repository<Product>,
+    @InjectRepository(ProductImages) private productsImagesRepository: Repository<ProductImages>,
   ) {}
 
   async create(createProductDto: CreateProductDto, imageUrl:string) {
@@ -31,7 +34,8 @@ export class ProductsService {
 
     const queryBuilder = this.productsRepository
       .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category');
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.images', 'images');
 
     if (category_id) {
       queryBuilder.andWhere('category.id = :id', { id: category_id });
@@ -65,18 +69,18 @@ export class ProductsService {
     return { data, page: +page, total_pages, count:total };
   }
 
-  findOne(id: number) {
+  findOneProduct(id: number) {
     return this.productsRepository.findOne({
       where: { id: id },
-      relations: { category: true },
+      relations: { category: true, images: true },
     });
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
+  updateProduct(id: number, updateProductDto: UpdateProductDto) {
     return `This action updates a #${id} product`;
   }
 
-  async remove(id: number) {
+  async removeProduct(id: number) {
     const product = await this.productsRepository.findOne({
       where: { id: id },
     });
@@ -87,5 +91,58 @@ export class ProductsService {
     await this.productsRepository.remove(product);
 
     return { message: 'Product deleted successfully' };
+  }
+
+
+  // ------------ post Images for product ---------
+  async uploadImages(product_id, images) {
+    const product = await this.productsRepository.findOne({where: {id: product_id}, relations: {images: true}})
+    if (!product) {
+      throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+    }
+
+    const newImages:ProductImages[] = []
+
+    images.forEach(img => {
+      const productImage = this.productsImagesRepository.create({
+        image: `${this.baseUrl}/uploads/${img.filename}`,
+        product: {id: product_id} 
+      })
+      newImages.push(productImage)
+    });
+
+    await this.productsImagesRepository.save(newImages)
+
+    return this.findOneProduct(product_id)
+  }
+
+  async removeProductImage(product_id: number, image_id: number) {
+    const product = await this.productsImagesRepository.findOne({
+      where: { id: image_id, product: {id: product_id} },
+    });
+
+    if (!product) {
+      throw new HttpException('Product image not found', HttpStatus.NOT_FOUND);
+    }
+    await this.productsImagesRepository.remove(product);
+
+    return { message: 'Product image deleted successfully' };
+  }
+
+  async updateProductImage(product_id: number, image_id: number, newImage) {
+    const productImg = await this.productsImagesRepository.findOne({
+      where: { id: image_id, product: {id: product_id} },
+    });
+
+    if (!productImg) {
+      throw new HttpException('Product image not found', HttpStatus.NOT_FOUND);
+    } else {
+      productImg.image = `${this.baseUrl}/uploads/${newImage.filename }`
+    }
+
+
+    await this.productsImagesRepository.save(productImg);
+
+    return this.findOneProduct(product_id);
   }
 }

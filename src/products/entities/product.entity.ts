@@ -1,9 +1,16 @@
-
 import { Category } from 'src/categories/entities/category.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 import { ProductImages } from './product-images.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 
-@Entity({ name: "products" })
+@Entity({ name: 'products' })
 export class Product {
   @PrimaryGeneratedColumn()
   id: number;
@@ -21,15 +28,18 @@ export class Product {
   old_price: number;
 
   @Column()
-  image: string
+  image: string;
 
   @Column('int')
   stock: number;
 
-  @ManyToOne(() => Category, category => category.products) // Many products belong to one category
+  @ManyToOne(() => Category, (category) => category.products) // Many products belong to one category
   @JoinColumn({ name: 'category_id' }) // The column in the 'products' table that stores the category foreign key
   category: Category;
 
   @OneToMany(() => ProductImages, (image) => image.product, { cascade: true }) // Enables automatic insertion of images when adding a product
   images: ProductImages[];
+
+  @OneToMany(() => Review, (review) => review.product)
+  reviews: Review[];
 }

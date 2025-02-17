@@ -24,6 +24,8 @@ import { UsersModule } from './admin/users/users.module';
 import { OrdersModule as OrdersAdminModule} from './admin/orders/orders.module';
 import { ProductImages } from './products/entities/product-images.entity';
 import { Payment } from './payment/entities/payment.entity';
+import { ReviewsModule } from './reviews/reviews.module';
+import { Review } from './reviews/entities/review.entity';
 
 @Module({
   imports: [
@@ -34,7 +36,7 @@ import { Payment } from './payment/entities/payment.entity';
       username: 'root',
       password: 'StrongP@ssword1',
       database: 'newEcommerce',
-      entities: [Product, ProductImages, Category, User, Cart, CartItem, Order, OrderItem, Favorite, ShippingAddress, Payment],
+      entities: [Product, ProductImages, Category, User, Cart, CartItem, Order, OrderItem, Favorite, ShippingAddress, Payment, Review],
       synchronize: true,
     }),
     ConfigModule.forRoot({
@@ -49,7 +51,8 @@ import { Payment } from './payment/entities/payment.entity';
     FavoritesModule,
     ShippingsModule,
     UsersModule,
-    OrdersAdminModule
+    OrdersAdminModule,
+    ReviewsModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ShippingAddress } from 'src/shippings/entities/shipping.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 
 export enum UserRole {
     USER = 'user',
@@ -29,6 +30,9 @@ export class User {
 
   @OneToMany(() => ShippingAddress, (shipping) => shipping.id)
   shippingAddresses: ShippingAddress[]
+
+  @OneToMany(() => Review, (review) => review.id)
+  reviews: ShippingAddress[]
 
   @BeforeInsert()
   async hashPassword() {

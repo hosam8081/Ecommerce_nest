@@ -35,8 +35,10 @@ export class ProductsService {
     const queryBuilder = this.productsRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.category', 'category')
-      .leftJoinAndSelect('product.images', 'images');
-
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('product.reviews', 'reviews') // Join reviews to calculate rating
+      
+      
     if (category_id) {
       queryBuilder.andWhere('category.id = :id', { id: category_id });
     }
@@ -72,7 +74,7 @@ export class ProductsService {
   findOneProduct(id: number) {
     return this.productsRepository.findOne({
       where: { id: id },
-      relations: { category: true, images: true },
+      relations: { category: true, images: true, reviews: true },
     });
   }
 
